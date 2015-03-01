@@ -1,0 +1,54 @@
+[[cdi-se]]
+
+== Using CDI in Java SE Applications
+
+=== Bootstrapping a container
+
+In Java EE, CDI comes enabled by default in your application, but if you're working with a Java SE application you can bootstrap a CDI container yourself to enable dependency injection.
+
+[source,java]
+----
+public static void main(String... args) {
+    CDIContainer container = CDIContainerLoader.getCDIContainer();
+    CDI<Object> cdi = container.initialize();
+    // retrieve a bean and do work with it
+    MyBean myBean = cdi.select(MyBean.class).get();
+    myBean.doWork();
+    // when done
+    container.shutdown();
+}
+----
+
+The class `CDIContainerLoader` is responsible for looking up the container implementation at runtime based on containers found on the classpath.
+
+The `CDIContainer` retrieved by the `CDIContainerLoader` is responsible for starting and shutting down the container.
+
+The `CDIContainerLoader` should treat the `CDIContainer` as if it were a singleton, only a single instance should be created and used within an application.  Subsequent calls to `getCDIContainer()` should return the same instance.
+
+Only a single `CDIContainer` may be initialized within an SE application at a time.  If a container has already been initialized and you call `initialize` again, an IllegalStateException is thrown.
+
+The `CDIContainer` can be stopped when it's not needed.  To help with this, `CDIContainer` extends `AutoCloseable`, so when derefenced it should shutdown automatically.  You may also shutdown the container manually by calling the `shutdown` method on the container.  If the `shutdown` method is explicitly invoked, it may throw an `IllegalStateException` if the container was never initialized or if it was already shutdown.  The `close` method should not throw an `IllegalStateException` if the container was never initialized.
+
+Due to that, the following code block is equivalent to the above example:
+
+[source,java]
+----
+public static void main(String... args) {
+    try(CDIContainer container = CDIContainerLoader.getCDIContainer()) {
+        CDI<Object> cdi = container.initialize();
+        // retrieve a bean and do work with it
+        MyBean myBean = cdi.select(MyBean.class).get();
+        myBean.doWork();
+    }
+    // shuts down automatically after the try with resources block.
+}
+----
+
+=== Classpath Scanning
+
+All classpath entries in a Java SE application are considered to be at the same level.  All rules that apply to bean resolution based on `beans.xml` declaration continue to apply the same way in Java SE.
+
+* If a classpath entry contains a `META-INF/beans.xml` with `bean-discovery-mode=annotated` or does not contain a `META-INF/beans.xml` then only the annotated beans will be scanned within that entry.
+* If a classpath entry contains a `META-INF/beans.xml` with `bean-discovery-mode=all` then all classes will be scanned within that entry.
+* If a classpath entry contains a `META-INF/beans.xml` with `bean-discovery-mode=none` then no classes will be scanend within that entry.
+
