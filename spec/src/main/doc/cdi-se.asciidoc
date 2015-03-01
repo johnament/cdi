@@ -35,9 +35,8 @@ Due to that, the following code block is equivalent to the above example:
 ----
 public static void main(String... args) {
     try(CDIContainer container = CDIContainerLoader.getCDIContainer()) {
-        CDI<Object> cdi = container.initialize();
-        // retrieve a bean and do work with it
-        MyBean myBean = cdi.select(MyBean.class).get();
+        // start the container, retrieve a bean and do work with it
+        MyBean myBean = container.initialize().select(MyBean.class).get();
         myBean.doWork();
     }
     // shuts down automatically after the try with resources block.
