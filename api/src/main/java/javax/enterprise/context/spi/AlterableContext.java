@@ -50,14 +50,4 @@ import javax.enterprise.context.ContextNotActiveException;
  */
 public interface AlterableContext extends Context {
 
-    /**
-     * <p>
-     * Destroy the existing contextual instance. If there is no existing instance, no action is taken.
-     * </p>
-     * 
-     * @param contextual the contextual type
-     * @throws ContextNotActiveException if the context is not active
-     */
-    public void destroy(Contextual<?> contextual);
-
 }

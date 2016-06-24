@@ -17,9 +17,6 @@
 
 package javax.enterprise.context.spi;
 
-import java.lang.annotation.Annotation;
-
-import javax.enterprise.context.ContextNotActiveException;
 
 /**
  * <p>
@@ -49,46 +46,11 @@ import javax.enterprise.context.ContextNotActiveException;
  * 
  * @author Gavin King
  * @author Pete Muir
+ * @author John D. Ament
  */
 
-public interface Context {
+public interface Context extends BaseContext {
 
-    /**
-     * Get the scope type of the context object.
-     * 
-     * @return the scope
-     */
-    public Class<? extends Annotation> getScope();
-
-    /**
-     * Return an existing instance of certain contextual type or create a new instance by calling
-     * {@link javax.enterprise.context.spi.Contextual#create(CreationalContext)} and return the new instance.
-     * 
-     * @param <T> the type of contextual type
-     * @param contextual the contextual type
-     * @param creationalContext the context in which the new instance will be created
-     * @return the contextual instance
-     * 
-     * @throws ContextNotActiveException if the context is not active
-     */
-    public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext);
-
-    /**
-     * Return an existing instance of a certain contextual type or a null value.
-     * 
-     * @param <T> the type of the contextual type
-     * @param contextual the contextual type
-     * @return the contextual instance, or a null value
-     * 
-     * @throws ContextNotActiveException if the context is not active
-     */
-    public <T> T get(Contextual<T> contextual);
-
-    /**
-     * Determines if the context object is active.
-     * 
-     * @return <tt>true</tt> if the context is active, or <tt>false</tt> otherwise.
-     */
-    public boolean isActive();
+    ManagedContext activate();
 
 }
