@@ -74,5 +74,7 @@ public interface BaseContext {
      * @param contextual the contextual type
      * @throws ContextNotActiveException if the context is not active
      */
-    void destroy(Contextual<?> contextual);
+    default void destroy(Contextual<?> contextual) {
+
+    }
 }

@@ -51,6 +51,4 @@ package javax.enterprise.context.spi;
 
 public interface Context extends BaseContext {
 
-    ManagedContext activate();
-
 }

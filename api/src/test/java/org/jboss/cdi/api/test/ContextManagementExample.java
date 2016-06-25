@@ -28,7 +28,7 @@ import javax.enterprise.inject.spi.CDI;
 public class ContextManagementExample {
     public void startAContext() {
         BeanManager beanManager = CDI.current().getBeanManager();
-        try(ManagedContext requestContext = beanManager.getContext(RequestScoped.class).activate()) {
+        try(ManagedContext requestContext = beanManager.activateContext(RequestScoped.class)) {
             SomeBean someBean = CDI.current().select(SomeBean.class).get();
             someBean.doWork();
         }
